@@ -89,6 +89,8 @@ func TwoThings () int, string
 }
 ```
 
+    num, str var = TwoThings()
+
 ### Closures
 
 Closures must be created explicitly, as desired.
