@@ -91,6 +91,10 @@ func TwoThings () int, string
 
     num, str var = TwoThings()
 
+### Scope
+
+Inside a function, all local variables are block-scoped. Top level functions are package-scoped. If the function definition is prefaced with `export` then it can be called by other packages. 
+
 ### Closures
 
 Closures must be created explicitly, as desired.
@@ -135,14 +139,36 @@ DoSomething(func (val)
 ## Type Definitions
 
 RaeLang doesn't make any distinction between classes, structs, and interfaces. RaeLang only has type definitions. Reference (declared with `reftype`) types are passed via pointers in assignments, function arguments, and return statements. They can be composed of properties of any types and instances may survive beyond the scope they were created in.
+
+```
+reftype MyReferenceType
+{
+}
+```
  
  Value types (declared with `valtype`) are always passed by value (copied, as necessary). Their properties can only be other value types. This means that value types _always_ occupy the same total memory space. Instances of value types don't survive beyond the scope they were created in.
 
 ```
-reftype MyType
+valtype MyValueType
 {
 }
 ```
+
+Sub-types (declared with `subtype`) can be thought of as type aliases. If you want an alias for a string, you could write:
+
+```
+subtype MyStringType string
+```
+
+However, subtypes have the additional ability to impose restrictions on the permitted values via a validator. For example, you could subtype the int32 type to only accept values 0 through 10;
+
+```
+subtype LimitedInt int32 validated
+{
+	if (value < 0 || value > 10)
+		throw new Exception("LimitedInt only supports values 0-10")
+}
+``` 
 
 All types are internal to a package unless explicitly exported using the `export` keyword.
 
@@ -153,6 +179,8 @@ export reftype MyPublicType
 ```
 
 ### Constructors
+
+> Not applicable to subtypes.
 
 There are no implicit constructors. If there is no constructor, then there is no way to construct an instance of that type (such a type might still be useful as an interface).
 
