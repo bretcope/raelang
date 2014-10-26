@@ -384,7 +384,7 @@ RaeLang uses an approach which is in-between the two traditional approaches, but
 
 ### When to use Exceptions
 
-There is exactly one reason to ever use an exception: when there is not a clear and definitively correct code path to continue on. Exceptions are not really "exceptional" because, in many cases, they are actually expected behavior. So let's not even call them that. RaeLang calls exceptions "BailReports" because all it really tells you, for sure, is that the function bailed out of execution.
+There is exactly one reason to ever use an exception: when there is not a clear and definitively correct code path to continue on. Exceptions are not really "exceptional" because, in many cases, they are actually expected behavior. So let's not even call them that. RaeLang calls exceptions "BailReports" because all it really tells you, for sure, is that the function bailed out of execution without returning what it promised to return.
 
 ### BailReport Struct
 
