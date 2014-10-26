@@ -32,7 +32,7 @@ Variables are immutable by default:
 
 ```
 str var = "hello"
-str = "world" // <- throws exception
+str = "world" // <- compiler error
 ```
 
 To make mutable, use the mut keyword.
@@ -174,7 +174,7 @@ These derived types can be restricted to only a subset of valid values using a v
 type OneToTen uint8 validated
 {
 	if (value < 1 || value > 10)
-		throw new Exception()
+		bail
 }
 ```
 
@@ -286,15 +286,15 @@ RaeLang does not support getters and setters in the traditional sense. However, 
 
 ##### Validators
 
-Validated fields are declared using the `validated` keyword, followed by a code block. This code block has read access to the current object, and it can call any non-mutating methods, but it may not modify the state of any scope outside this block (you can't even change other fields on the current object). The `value` keyword contains the value which is attempting to be assigned to the property. The only two possible outcomes are, 1. the value is assigned to the property, or 2. an exception is thrown (preventing assignment). You cannot use a validator to modify the value being assigned. If you need to modify the input, write a method - it's what they're for.
+Validated fields are declared using the `validated` keyword, followed by a code block. This code block has read access to the current object, and it can call any non-mutating methods, but it may not modify the state of any scope outside this block (you can't even change other fields on the current object). The `value` keyword contains the value which is attempting to be assigned to the property. The only two possible outcomes are, 1. the value is assigned to the property, or 2. an execution bail (preventing assignment). You cannot use a validator to modify the value being assigned. If you need to modify the input, write a method - it's what they're for.
 
 ```
 type MyClass class
 {
 	EmailAddress string validated
 	{
-		if (!value.Contains('@'))
-			throw new Exception('Email addresses must contain an @ symbol.')
+		if (!value.Contains("@"))
+			bail "Email addresses must contain an @ symbol."
 	}
 	
 	Constructor (email string)
@@ -305,7 +305,7 @@ type MyClass class
 
 // example usage
 c1 var = new MyClass("test@example.com")
-c2 var = new MyClass("test") // throws an exception
+c2 var = new MyClass("test") // bails
 ```
 
 Think of validators as an extension of the type system, rather than a setter.
@@ -487,3 +487,15 @@ if (x == y)
 ```
 
 because the bail and unbail are in the same block.
+
+#### Bail Shorthand
+
+```
+bail "message"
+```
+
+is shorthand for
+
+```
+bail new BailReport("message")
+```
