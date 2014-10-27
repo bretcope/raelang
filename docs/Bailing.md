@@ -57,20 +57,40 @@ $br, str var = Lookup(7)
 
 Just capturing the bail report is not enough to prevent it from bubbling up the call stack. We have to explicitly handle the bail report using an `unbail` block. However, __the unbail block is not a catch__ block. It gives you the _opportunity_ to recover by providing alternate values for variables which were supposed to have been assigned by the function call.
 
-In the above example, we are attempting to assign the `str` variable, but if the function bails, then `str` will be undefined, which is not a valid value. If, by the end of the unbail block, `str` is assigned a value, then execution will continue. Otherwise the current function will bail, propagating the original bail report up the call stack.
+In the above example, we are attempting to assign the `str` variable, but if the function bails, then `str` will be undefined, which is not a valid value. All possible code paths through the unbail block must do one of three things, 1. assign a value to `str`, 2. return, or 3. bail.
+
+__The following unbail is invalid__ because there is a possible code path which doesn't perform any of those three:
 
 ```
 $br, str var = Lookup(7)
 unbail ($br)
 {
 	if ($br.Message == "I don't know what you're talking about")
-	{
 		str = "lots"
-	}
 }
 ```
 
-Alternatively, you could execute a return statement inside the unbail block which would also prevent an implicit bail.
+This unbail would be valid:
+
+```
+$br, str var = Lookup(7)
+unbail ($br)
+{
+	if ($br.Message == "I don't know what you're talking about")
+		str = "lots"
+	else
+		bail $br
+}
+```
+
+If we don't capture any return values from a function (regardless of the functions return types), then the unbail block doesn't have any special requirements. Even an empty unbail block would be valid.
+
+```
+$br var = SomeFunction()
+unbail ($br)
+{
+}
+```
 
 You can perform any code you want inside the unbail block, including assigning other variables or performing function calls. It is the only block where you can access the special `$br` variable.
 
