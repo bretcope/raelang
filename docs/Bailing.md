@@ -85,7 +85,7 @@ unbail ($br)
 }
 ```
 
-If we don't capture any return values from a function (regardless of the functions return types), then the unbail block doesn't have any special requirements. Even an empty unbail block would be valid.
+If we don't capture any return values from a function (regardless of the function's return types), then the unbail block doesn't have any special requirements. Even an empty unbail block would be valid and cause execution to continue after it.
 
 ```
 $br var = SomeFunction()
