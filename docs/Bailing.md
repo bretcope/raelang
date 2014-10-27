@@ -55,11 +55,13 @@ When we call this function, we can choose to either capture this bail report or 
 $br, str var = Lookup(7)
 ```
 
-Just capturing the bail report is not enough to prevent it from bubbling up the call stack. We have to explicitly handle the bail report using an `unbail` block. However, __the unbail block is not a catch__ block. It gives you the _opportunity_ to recover by providing alternate values for variables which were supposed to have been assigned by the function call.
+Just capturing the bail report is not enough to prevent it from bubbling up the call stack. We have to explicitly handle the bail report using an `unbail` block. However, __the unbail block is not a catch__ block. All possible code paths through the unbail block must do one of three things:
+ 
+1. Return,
+2. Bail, or
+3. Assign a value to all variables which should have been assigned by the function return list.
 
-In the above example, we are attempting to assign the `str` variable, but if the function bails, then `str` will be undefined, which is not a valid value. All possible code paths through the unbail block must do one of three things, 1. assign a value to `str`, 2. return, or 3. bail.
-
-__The following unbail is invalid__ because there is a possible code path which doesn't perform any of those three:
+In the above example, we are attempting to assign the `str` variable, but if `Lookup()` bails, then `str` will be undefined, which is not a valid value. __The following unbail is invalid__ because there is a possible code path which doesn't perform any of the above three:
 
 ```
 $br, str var = Lookup(7)
