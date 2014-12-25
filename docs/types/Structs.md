@@ -100,28 +100,28 @@ It is important to understand that, for obvious reasons, non-mutating methods ca
 
 ## Accessors
 
-RaeLang does not support getters and setters in the traditional sense. However, there are validated fields and composed fields which provide some of the benefits of getters and setters without the side-effects.
+RaeLang does not support getters and setters in the traditional sense. However, there are validated fields and lazy fields which provide some of the benefits of getters and setters without the side-effects.
 
 ### Validated Fields
 
 See [Validators](./Validators.md).
 
-### Composed Fields
+### Lazy Fields
 
-Composed properties are similar to traditional getters in that they are calculated at runtime. However, they are evaluated when the object is created, immediately after the constructor finishes. Also unlike a getter, this value is stored with the object and is never re-evaluated. The composition code block is essentially a non-mutating member function.
+Lazy fields are similar to traditional getters in that they are calculated at runtime. However, they are lazy-evaluated when accessed the first time, then cached and never re-evaluated.
 
 ```
 type MyType struct
 {
 	FirstName string
 	LastName string
-	FullName string composed
+	FullName string lazy
 	{
-		return FirstName + " " + LastName
+		value = FirstName + " " + LastName
 	}
 	
 	// constructor ...
 }
 ```
 
-The best way to think of composed properties is as a distributed constructor. It's nice syntax sugar, but it also helps keep constructor sizes small by removing one more tedious task you might have to otherwise put in there. If you need a traditional getter which can potentially produce a different value at different times in an object's lifetime, you should use a function.
+Lazy fields can only access immutable fields and methods, and lazy fields cannot be used inside constructors. If you need a traditional getter which can potentially produce different values at different points in an object's lifetime, then just use a function... that's what they're for.
